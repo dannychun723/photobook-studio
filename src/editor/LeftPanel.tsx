@@ -1096,7 +1096,7 @@ function BGTab({
                 const effectiveH = currentBg.h ?? autoH;
                 const extraW = effectiveW - spreadW;
                 const extraH = effectiveH - spreadH;
-                const sizeVal = Math.max(100, Math.round(effectiveW / autoW * 100));
+                const sizeVal = Math.round(effectiveW / autoW * 100);
                 const horizVal = extraW > 0 && currentBg.x !== undefined
                   ? Math.round(Math.min(100, Math.max(0, -currentBg.x / extraW * 100))) : 50;
                 const vertVal = extraH > 0 && currentBg.y !== undefined
@@ -1145,7 +1145,7 @@ function BGTab({
                         <p className="text-[9px] font-semibold uppercase tracking-[0.08em] text-ink-faint">Size</p>
                         <span className="text-[9px] tabular-nums text-ink-faint">{sizeVal}%</span>
                       </div>
-                      <input type="range" min={100} max={300} step={5}
+                      <input type="range" min={10} max={200} step={5}
                         value={sizeVal}
                         onChange={(e) => {
                           if (!activeSpreadId) return;
@@ -1177,8 +1177,14 @@ function BGTab({
                         value={vertVal}
                         onChange={(e) => {
                           if (!activeSpreadId) return;
+                          const val = Number(e.target.value);
                           void updateSpread(activeSpreadId, (s) => ({
-                            ...s, bg: s.bg ? { ...s.bg, y: -extraH * (Number(e.target.value) / 100) } : s.bg,
+                            ...s, bg: s.bg ? {
+                              ...s.bg,
+                              w: s.bg.w ?? autoW,
+                              h: s.bg.h ?? autoH,
+                              y: -extraH * (val / 100),
+                            } : s.bg,
                           }));
                         }}
                         className="w-full cursor-pointer accent-[#c9a36a]" style={{ height: 4 }}
@@ -1194,8 +1200,14 @@ function BGTab({
                         value={horizVal}
                         onChange={(e) => {
                           if (!activeSpreadId) return;
+                          const val = Number(e.target.value);
                           void updateSpread(activeSpreadId, (s) => ({
-                            ...s, bg: s.bg ? { ...s.bg, x: -extraW * (Number(e.target.value) / 100) } : s.bg,
+                            ...s, bg: s.bg ? {
+                              ...s.bg,
+                              w: s.bg.w ?? autoW,
+                              h: s.bg.h ?? autoH,
+                              x: -extraW * (val / 100),
+                            } : s.bg,
                           }));
                         }}
                         className="w-full cursor-pointer accent-[#c9a36a]" style={{ height: 4 }}
@@ -1214,7 +1226,7 @@ function BGTab({
                 const lEffH = layer.h ?? lAutoH;
                 const lExtraW = lEffW - spreadW;
                 const lExtraH = lEffH - spreadH;
-                const lSizeVal = Math.max(100, Math.round(lEffW / lAutoW * 100));
+                const lSizeVal = Math.round(lEffW / lAutoW * 100);
                 const lHorizVal = lExtraW > 0 && layer.x !== undefined
                   ? Math.round(Math.min(100, Math.max(0, -layer.x / lExtraW * 100))) : 50;
                 const lVertVal = lExtraH > 0 && layer.y !== undefined
@@ -1258,7 +1270,7 @@ function BGTab({
                         <p className="text-[9px] font-semibold uppercase tracking-[0.08em] text-ink-faint">Size</p>
                         <span className="text-[9px] tabular-nums text-ink-faint">{lSizeVal}%</span>
                       </div>
-                      <input type="range" min={100} max={300} step={5}
+                      <input type="range" min={10} max={200} step={5}
                         value={lSizeVal}
                         onChange={(e) => {
                           if (!activeSpreadId) return;
@@ -1292,9 +1304,15 @@ function BGTab({
                         value={lVertVal}
                         onChange={(e) => {
                           if (!activeSpreadId) return;
+                          const val = Number(e.target.value);
                           void updateSpread(activeSpreadId, (s) => ({
                             ...s, bgLayers: (s.bgLayers ?? []).map((l) =>
-                              l.id === layer.id ? { ...l, y: -lExtraH * (Number(e.target.value) / 100) } : l
+                              l.id === layer.id ? {
+                                ...l,
+                                w: l.w ?? lAutoW,
+                                h: l.h ?? lAutoH,
+                                y: -lExtraH * (val / 100),
+                              } : l
                             ),
                           }));
                         }}
@@ -1311,9 +1329,15 @@ function BGTab({
                         value={lHorizVal}
                         onChange={(e) => {
                           if (!activeSpreadId) return;
+                          const val = Number(e.target.value);
                           void updateSpread(activeSpreadId, (s) => ({
                             ...s, bgLayers: (s.bgLayers ?? []).map((l) =>
-                              l.id === layer.id ? { ...l, x: -lExtraW * (Number(e.target.value) / 100) } : l
+                              l.id === layer.id ? {
+                                ...l,
+                                w: l.w ?? lAutoW,
+                                h: l.h ?? lAutoH,
+                                x: -lExtraW * (val / 100),
+                              } : l
                             ),
                           }));
                         }}
