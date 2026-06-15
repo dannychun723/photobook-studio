@@ -47,12 +47,16 @@ function LockedScreen() {
 
 // ── Admin panel ───────────────────────────────────────────────────────────────
 
+const VERCEL_ORIGIN = "https://photobook-studio.vercel.app";
+
 function AdminPanel() {
   const [users, setUsers] = useState<ManagedUser[]>(getManagedUsers);
   const [newLabel, setNewLabel] = useState("");
   const [copiedUid, setCopiedUid] = useState<string | null>(null);
+  const isOnVercel = window.location.origin === VERCEL_ORIGIN;
+  const [useVercel, setUseVercel] = useState(true);
 
-  const origin = window.location.origin;
+  const origin = useVercel ? VERCEL_ORIGIN : window.location.origin;
 
   const refresh = () => setUsers(getManagedUsers());
 
@@ -102,6 +106,45 @@ function AdminPanel() {
             </p>
           </div>
         </div>
+
+        {/* Link destination toggle — only shown when running locally */}
+        {!isOnVercel && (
+          <div
+            className="rounded-2xl border p-4 mb-4 flex items-center justify-between gap-4"
+            style={{ background: "#fdf8f0", borderColor: "#e8d9bc" }}
+          >
+            <div>
+              <p className="text-[12px] font-semibold" style={{ color: "#8b5e2a" }}>Link destination</p>
+              <p className="text-[11px] mt-0.5" style={{ color: "#a09c93" }}>
+                {useVercel
+                  ? "Links point to the live Vercel site — share these with friends"
+                  : "Links point to localhost — for local testing only"}
+              </p>
+            </div>
+            <div className="flex rounded-lg overflow-hidden border shrink-0" style={{ borderColor: "#e8d9bc" }}>
+              <button
+                type="button"
+                onClick={() => setUseVercel(true)}
+                className="px-3 py-1.5 text-[11px] font-medium transition-colors"
+                style={useVercel
+                  ? { background: "#8b5e2a", color: "#fff" }
+                  : { background: "#fff", color: "#a09c93" }}
+              >
+                Live (Vercel)
+              </button>
+              <button
+                type="button"
+                onClick={() => setUseVercel(false)}
+                className="px-3 py-1.5 text-[11px] font-medium transition-colors"
+                style={!useVercel
+                  ? { background: "#8b5e2a", color: "#fff" }
+                  : { background: "#fff", color: "#a09c93" }}
+              >
+                Local
+              </button>
+            </div>
+          </div>
+        )}
 
         {/* Generate form */}
         <div
